@@ -1,0 +1,757 @@
+import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+// Hot reload funciona automaticamente ao salvar o arquivo
+// Para forçar um reload: pressione 'r' no terminal
+// Para um restart completo: pressione 'R' no terminal
+
+class Porteiro {
+  final String nome;
+  final String usuario;
+  final String senha;
+  final DateTime inicioPlantao;
+
+  Porteiro({
+    required this.nome,
+    required this.usuario,
+    required this.senha,
+    required this.inicioPlantao,
+  });
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sistema de Portaria',
+      theme: ThemeData(
+        colorScheme: const ColorScheme.dark(
+          primary: Colors.green,
+          secondary: Colors.greenAccent,
+        ),
+        useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.grey,
+          foregroundColor: Colors.white,
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.green,
+          foregroundColor: Colors.white,
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          filled: true,
+          iconColor: Colors.green,
+          labelStyle: TextStyle(color: Colors.green),
+        ),
+      ),
+      home: const LoginPage(),
+    );
+  }
+}
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _usuarioController = TextEditingController();
+  final _senhaController = TextEditingController();
+  bool _mostrarSenha = false;
+  String? _erro;
+
+  void _fazerLogin() {
+    if (_formKey.currentState?.validate() ?? false) {
+      // Aqui você implementaria a verificação real das credenciais
+      // Por enquanto, vamos usar um exemplo simples
+      if (_usuarioController.text == 'admin' &&
+          _senhaController.text == 'admin123') {
+        final porteiro = Porteiro(
+          nome: 'Administrador',
+          usuario: _usuarioController.text,
+          senha: _senhaController.text,
+          inicioPlantao: DateTime.now(),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage(porteiro: porteiro)),
+        );
+      } else {
+        setState(() {
+          _erro = 'Usuário ou senha inválidos';
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.black, Colors.grey[900]!, Colors.green.shade900],
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.green.withAlpha(25),
+                        border: Border.all(
+                          color: Colors.green.withAlpha(128),
+                          width: 2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.green.withAlpha(51),
+                            blurRadius: 20,
+                            spreadRadius: 5,
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.shield_outlined,
+                        size: 64,
+                        color: Colors.green,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Login do Porteiro',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    TextFormField(
+                      controller: _usuarioController,
+                      decoration: const InputDecoration(
+                        labelText: 'Usuário',
+                        prefixIcon: Icon(Icons.person_outline),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira seu usuário';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _senhaController,
+                      obscureText: !_mostrarSenha,
+                      decoration: InputDecoration(
+                        labelText: 'Senha',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _mostrarSenha
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _mostrarSenha = !_mostrarSenha;
+                            });
+                          },
+                        ),
+                        border: const OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira sua senha';
+                        }
+                        return null;
+                      },
+                    ),
+                    if (_erro != null) ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        _erro!,
+                        style: const TextStyle(color: Colors.red, fontSize: 14),
+                      ),
+                    ],
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: _fazerLogin,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          'Entrar',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _usuarioController.dispose();
+    _senhaController.dispose();
+    super.dispose();
+  }
+}
+
+// Modificar a HomePage para receber o porteiro
+class HomePage extends StatelessWidget {
+  final Porteiro porteiro;
+
+  const HomePage({super.key, required this.porteiro});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.black, Colors.grey[900]!, Colors.green.shade900],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withAlpha(77),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: Colors.green.withAlpha(77),
+                          width: 2,
+                        ),
+                      ),
+                      child: const Text(
+                        'Sistema de Portaria',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    // Informações do porteiro
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.green.withAlpha(77),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.person, color: Colors.white),
+                          const SizedBox(width: 8),
+                          Text(
+                            porteiro.nome,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.exit_to_app,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginPage(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(30),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.green.withAlpha(25),
+                          border: Border.all(
+                            color: Colors.green.withAlpha(128),
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.green.withAlpha(51),
+                              blurRadius: 20,
+                              spreadRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.shield_outlined,
+                          size: 100,
+                          color: Colors.green,
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      ShaderMask(
+                        shaderCallback: (bounds) => const LinearGradient(
+                          colors: [
+                            Colors.green,
+                            Color(0xFF90EE90), // Light green
+                          ],
+                        ).createShader(bounds),
+                        child: const Text(
+                          'Bem-vindo ao\nSistema de Portaria',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            height: 1.2,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 60),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 40),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFF2E7D32), // Colors.green.shade700
+                              Color(0xFF1B5E20), // Colors.green.shade900
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.green.withAlpha(77),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      PortariaPage(porteiro: porteiro),
+                                ),
+                              );
+                            },
+                            borderRadius: BorderRadius.circular(30),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                                vertical: 16,
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.people_outline,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
+                                  SizedBox(width: 12),
+                                  Text(
+                                    'Gerenciar Visitantes',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 4,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.green.withAlpha(77),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      height: 4,
+                      width: 20,
+                      decoration: BoxDecoration(
+                        color: Colors.green.withAlpha(128),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Atualizar a PortariaPage para incluir o porteiro
+class PortariaPage extends StatefulWidget {
+  final Porteiro porteiro;
+
+  const PortariaPage({super.key, required this.porteiro});
+
+  @override
+  State<PortariaPage> createState() => _PortariaPageState();
+}
+
+class _PortariaPageState extends State<PortariaPage> {
+  final List<Visitor> _visitors = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Gerenciamento de Visitantes'),
+        centerTitle: true,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF212121), // Colors.grey[900]
+              Colors.black,
+            ],
+          ),
+        ),
+        child: ListView.builder(
+          itemCount: _visitors.length,
+          itemBuilder: (context, index) {
+            final visitor = _visitors[index];
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: ListTile(
+                leading: const CircleAvatar(
+                  backgroundColor: Colors.green,
+                  child: Icon(Icons.person, color: Colors.white),
+                ),
+                title: Text(
+                  visitor.name,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                subtitle: Text(
+                  'CPF: ${visitor.cpf}',
+                  style: const TextStyle(color: Color(0xFF9E9E9E)),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.green),
+                      onPressed: () => _editVisitor(visitor, index),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _deleteVisitor(index),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addVisitor,
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  void _addVisitor() {
+    showDialog(
+      context: context,
+      builder: (context) => VisitorDialog(
+        onSubmit: (visitor) {
+          setState(() {
+            _visitors.add(visitor);
+          });
+        },
+      ),
+    );
+  }
+
+  void _editVisitor(Visitor visitor, int index) {
+    showDialog(
+      context: context,
+      builder: (context) => VisitorDialog(
+        visitor: visitor,
+        onSubmit: (updatedVisitor) {
+          setState(() {
+            _visitors[index] = updatedVisitor;
+          });
+        },
+      ),
+    );
+  }
+
+  void _deleteVisitor(int index) {
+    setState(() {
+      _visitors.removeAt(index);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Visitante removido com sucesso!')),
+    );
+  }
+}
+
+class Visitor {
+  final String name;
+  final String cpf;
+  final String phone;
+  final String email;
+
+  Visitor({
+    required this.name,
+    required this.cpf,
+    required this.phone,
+    required this.email,
+  });
+}
+
+class VisitorDialog extends StatefulWidget {
+  final Visitor? visitor;
+  final Function(Visitor) onSubmit;
+
+  const VisitorDialog({super.key, this.visitor, required this.onSubmit});
+
+  @override
+  State<VisitorDialog> createState() => _VisitorDialogState();
+}
+
+class _VisitorDialogState extends State<VisitorDialog> {
+  late TextEditingController _nameController;
+  late TextEditingController _cpfController;
+  late TextEditingController _phoneController;
+  late TextEditingController _emailController;
+  final _formKey = GlobalKey<FormState>();
+
+  final _cpfMask = MaskTextInputFormatter(
+    mask: '###.###.###-##',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+
+  final _phoneMask = MaskTextInputFormatter(
+    mask: '(##) #####-####',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.visitor?.name);
+    _cpfController = TextEditingController(text: widget.visitor?.cpf);
+    _phoneController = TextEditingController(text: widget.visitor?.phone);
+    _emailController = TextEditingController(text: widget.visitor?.email);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _cpfController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira o nome';
+    }
+    if (value.length < 3) {
+      return 'Nome deve ter pelo menos 3 caracteres';
+    }
+    return null;
+  }
+
+  String? _validateCPF(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira o CPF';
+    }
+    if (value.length != 14) {
+      return 'CPF inválido';
+    }
+    return null;
+  }
+
+  String? _validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira o telefone';
+    }
+    if (value.length != 15) {
+      return 'Telefone inválido';
+    }
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira o e-mail';
+    }
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+      return 'E-mail inválido';
+    }
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        widget.visitor == null ? 'Novo Visitante' : 'Editar Visitante',
+      ),
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nome',
+                  icon: Icon(Icons.person),
+                ),
+                validator: _validateName,
+                textCapitalization: TextCapitalization.words,
+              ),
+              TextFormField(
+                controller: _cpfController,
+                decoration: const InputDecoration(
+                  labelText: 'CPF',
+                  icon: Icon(Icons.badge),
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: [_cpfMask],
+                validator: _validateCPF,
+              ),
+              TextFormField(
+                controller: _phoneController,
+                decoration: const InputDecoration(
+                  labelText: 'Telefone',
+                  icon: Icon(Icons.phone),
+                ),
+                keyboardType: TextInputType.phone,
+                inputFormatters: [_phoneMask],
+                validator: _validatePhone,
+              ),
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: 'E-mail',
+                  icon: Icon(Icons.email),
+                ),
+                keyboardType: TextInputType.emailAddress,
+                validator: _validateEmail,
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancelar'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (_formKey.currentState?.validate() ?? false) {
+              final visitor = Visitor(
+                name: _nameController.text,
+                cpf: _cpfController.text,
+                phone: _phoneController.text,
+                email: _emailController.text,
+              );
+              widget.onSubmit(visitor);
+              Navigator.pop(context);
+            }
+          },
+          child: const Text('Salvar'),
+        ),
+      ],
+    );
+  }
+}
