@@ -1,56 +1,78 @@
-# Sistema de Portaria
+🔐 Sistema de Segurança - Gerenciamento de Cadastro
+Aplicativo mobile desenvolvido com Flutter, voltado ao controle de acesso e registro de visitantes em ambientes corporativos e residenciais. O sistema visa modernizar a recepção, garantindo segurança, agilidade e rastreabilidade das entradas e saídas.
 
-Sistema de gerenciamento de portaria desenvolvido em Flutter para controle de acesso e registro de visitantes.
+📱 Visão Geral
+Este app foi desenvolvido com o objetivo de automatizar processos de portaria, otimizando o registro de visitantes através de uma interface moderna, autenticação segura e navegação fluida.
+É ideal para condomínios, empresas e instituições que buscam digitalizar e centralizar a gestão de acesso.
 
-## Estrutura do Projeto
+🧠 Funcionalidades
+🔐 Login com autenticação segura
 
-```
+👥 Cadastro de usuários (porteiros)
+
+🧾 Registro detalhado de visitantes
+
+💡 Interface responsiva e intuitiva
+
+🧭 Navegação modular
+
+🧾 Geração de relatórios em PDF
+
+📁 Estrutura do Projeto
 lib/
-├── core/              # Configurações e utilitários core do app
-│   ├── config/        # Configurações do app
-│   ├── theme/         # Temas e estilos
-│   └── utils/         # Funções utilitárias
-├── data/             
-│   ├── models/        # Modelos de dados
-│   ├── repositories/  # Repositórios para acesso a dados
-│   └── services/      # Serviços de dados
-├── features/          # Módulos/Features do app
-│   ├── auth/          # Feature de autenticação
-│   ├── porteiro/      # Feature de gestão de porteiros
-│   └── visitante/     # Feature de gestão de visitantes
-├── shared/           
-│   ├── components/    # Componentes compartilhados
-│   └── widgets/       # Widgets reutilizáveis
-└── main.dart          # Ponto de entrada do app
-```
+├── core/            # Configurações e utilitários centrais
+│   ├── config/      # Definições globais
+│   ├── theme/       # Estilos do app
+│   └── utils/       # Funções auxiliares
+│
+├── data/            # Camada de dados
+│   ├── models/      # Modelos de dados
+│   ├── repositories/# Regras de acesso aos dados
+│   └── services/    # Integrações e lógicas de negócio
+│
+├── features/        # Funcionalidades divididas por domínio
+│   ├── auth/        # Autenticação
+│   ├── porteiro/    # Gestão de usuários
+│   └── visitante/   # Gestão de visitantes
+│
+├── shared/          # Componentes reutilizáveis
+│   ├── components/  # Elementos visuais
+│   └── widgets/     # Widgets personalizados
+│
+└── main.dart        # Ponto de entrada da aplicação
 
-## Requisitos
+🧰 Tecnologias Utilizadas
+Flutter 3.0.0+
 
-- Flutter 3.0.0 ou superior
-- Dart 3.0.0 ou superior
+Dart
 
-## Como Executar
+Firebase Authentication (se aplicável)
 
-1. Clone o repositório
-2. Execute `flutter pub get` para instalar as dependências
-3. Execute `flutter run` para iniciar o app
+Arquitetura modular baseada em boas práticas de Clean Code
 
-## Funcionalidades
+🚀 Como Executar o Projeto
+# Clone o repositório
+git clone https://github.com/seu-usuario/seu-repo.git
+cd seu-repo
 
-- Login de porteiros
-- Cadastro de novos porteiros
-- Registro de visitantes
-- Histórico de visitas
-- Controle de acesso
+# Instale as dependências
+flutter pub get
 
-## Dependências Principais
+# Execute no emulador ou dispositivo
+flutter run
 
-- shared_preferences: Armazenamento local
-- mask_text_input_formatter: Formatação de campos de texto
+🎯 Objetivo do Projeto
+Projeto desenvolvido com foco em:
 
-## Padrões de Código
+Aplicação prática de conceitos modernos de desenvolvimento mobile
 
-- Nomenclatura em português para melhor compreensão do domínio
-- Documentação inline em português
-- Arquitetura baseada em features
-- Princípios SOLID e Clean Code
+Demonstração de domínio com arquitetura limpa
+
+Criação de um sistema seguro e escalável para controle de acesso
+
+Composição de portfólio profissional
+
+👨‍💻 Autor
+Fernando Lima
+Estudante de Análise e Desenvolvimento de Sistemas
+Desenvolvedor Full-Stack | Foco em Flutter, Node.js, e segurança digital
